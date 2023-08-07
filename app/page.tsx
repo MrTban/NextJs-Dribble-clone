@@ -19,7 +19,7 @@ type ProjectSearch = {
 
 type SearchParams = {
 	category?: string | null
-	endcursor?: string
+	endcursor?: string | null
 }
 
 type Props = {
