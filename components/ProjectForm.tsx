@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-import { createNewProject, fetchToken } from '@/lib/actions'
-import { SessionInterface } from '@/common.types'
+import { createNewProject, fetchToken, updateProject } from '@/lib/actions'
+import { ProjectInterface, SessionInterface } from '@/common.types'
 import { categoryFilters } from '@/constants'
 
 import FormField from './FormField'
@@ -16,9 +16,10 @@ import Button from './Button'
 type Props = {
 	type: string
 	session: SessionInterface
+	project?: ProjectInterface
 }
 
-const ProjectForm = ({ type, session }: Props) => {
+const ProjectForm = ({ type, session, project }: Props) => {
 	const router = useRouter()
 
 	const handleFormSubmit = async (e: React.FormEvent) => {
@@ -31,6 +32,12 @@ const ProjectForm = ({ type, session }: Props) => {
 		try {
 			if (type === 'create') {
 				await createNewProject(form, session?.user?.id, token)
+
+				router.push('/')
+			}
+
+			if (type === 'edit') {
+				await updateProject(form, project?.id as string, token)
 
 				router.push('/')
 			}
@@ -72,12 +79,12 @@ const ProjectForm = ({ type, session }: Props) => {
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [form, setForm] = useState({
-		image: '',
-		title: '',
-		description: '',
-		liveSiteUrl: '',
-		githubUrl: '',
-		category: '',
+		image: project?.image || '',
+		title: project?.title || '',
+		description: project?.description || '',
+		liveSiteUrl: project?.liveSiteUrl || '',
+		githubUrl: project?.githubUrl || '',
+		category: project?.category || '',
 	})
 
 	return (

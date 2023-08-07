@@ -1,6 +1,16 @@
-import { ProjectForm } from '@/common.types'
-import { createProjectMutation, createUserMutation, getUserQuery } from '@/graphql'
 import { GraphQLClient } from 'graphql-request'
+
+import { ProjectForm } from '@/common.types'
+import {
+	createProjectMutation,
+	createUserMutation,
+	deleteProjectMutation,
+	getProjectByIdQuery,
+	getProjectsOfUserQuery,
+	getUserQuery,
+	projectsQuery,
+	updateProjectMutation,
+} from '@/graphql'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const apiUrl = isProduction
@@ -85,4 +95,63 @@ export const createNewProject = async (
 
 		return makeGraphQLRequest(createProjectMutation, variables)
 	}
+}
+
+export const fetchAllProjects = async (category?: string, endcursor?: string) => {
+	client.setHeader('x-api-key', apiKey)
+
+	return makeGraphQLRequest(projectsQuery, { category, endcursor })
+}
+
+export const getProjectDetails = (id: string) => {
+	client.setHeader('x-api-key', apiKey)
+
+	return makeGraphQLRequest(getProjectByIdQuery, { id })
+}
+
+export const getUserProjects = (id: string, last?: number) => {
+	client.setHeader('x-api-key', apiKey)
+
+	return makeGraphQLRequest(getProjectsOfUserQuery, { id, last })
+}
+
+export const deleteProject = (id: string, token: string) => {
+	client.setHeader('Authorization', `Bearer ${token}`)
+
+	return makeGraphQLRequest(deleteProjectMutation, { id })
+}
+
+export const updateProject = async (
+	form: ProjectForm,
+	projectId: string,
+	token: string
+) => {
+	const isBase64DataURL = (value: string) => {
+		const base64Regex = /^data:image\/[a-z]+;base64,/
+		return base64Regex.test(value)
+	}
+
+	let updatedForm = { ...form }
+
+	const isUploadingNewImage = isBase64DataURL(form.image)
+
+	if (isUploadingNewImage) {
+		const imageUrl = await uploadImage(form.image)
+
+		if (imageUrl.url) {
+			updatedForm = {
+				...form,
+				image: imageUrl.url,
+			}
+		}
+	}
+
+	const variables = {
+		id: projectId,
+		input: updatedForm,
+	}
+
+	client.setHeader('Authorization', `Bearer ${token}`)
+
+	return makeGraphQLRequest(updateProjectMutation, variables)
 }
