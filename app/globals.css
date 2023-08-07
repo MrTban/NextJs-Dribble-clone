@@ -4,26 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-	--foreground-rgb: 0, 0, 0;
-	--background-start-rgb: 214, 219, 220;
-	--background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--foreground-rgb: 255, 255, 255;
-		--background-start-rgb: 0, 0, 0;
-		--background-end-rgb: 0, 0, 0;
-	}
-}
-
-body {
-	color: rgb(var(--foreground-rgb));
-	background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
-		rgb(var(--background-start-rgb));
-} */
-
 * {
 	margin: 0;
 	padding: 0;
@@ -141,11 +121,11 @@ body {
 
 /* Modal */
 .modal {
-	@apply h-screen fixed z-10 left-0 right-0 top-0 bottom-0 mx-auto bg-black/80;
+	@apply fixed z-10 left-0 right-0 top-0 bottom-0 mx-auto bg-black/80;
 }
 
 .modal_wrapper {
-	@apply flex justify-start items-center flex-col absolute xl:h-[90%] min-[1361px]:h-[95%] w-full bottom-0 bg-white rounded-t-3xl lg:px-40 px-8 pt-14 pb-72 overflow-auto;
+	@apply flex justify-start items-center flex-col absolute h-[90%] min-[1361px]:h-[95%] w-full bottom-0 bg-white rounded-t-3xl lg:px-40 px-8 pt-14 pb-72 overflow-auto;
 }
 
 /* Navbar */
